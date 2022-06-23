@@ -1,0 +1,19 @@
+{
+  "name": "extension-playground",
+  "version": "1.0.0",
+  "description": "Playground environment for building Web Extensions",
+  "scripts": {
+    "start": "npx parcel src/index.html"
+  },
+  "author": "Oliver Dunk",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/react-dom": "^18.0.5",
+    "parcel": "^2.6.2",
+    "process": "^0.11.10"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  }
+}
