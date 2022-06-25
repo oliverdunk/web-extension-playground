@@ -16,10 +16,11 @@ export interface EditorState {
   files: {
     name: string;
     text: string;
+    model?: any;
   }[];
 }
 
-async function loadSandbox(initialFile: EditorState["files"][0]): Promise<any> {
+async function loadSandbox(): Promise<any> {
   const browserTypesResponse = await fetch(browserTypesUrl);
   const browserTypes = await browserTypesResponse.text();
 
@@ -37,7 +38,7 @@ async function loadSandbox(initialFile: EditorState["files"][0]): Promise<any> {
       ],
       (main, _tsWorker, sandboxFactory) => {
         const sandboxConfig = {
-          text: initialFile.text,
+          text: "",
           compilerOptions: {},
           domID: "editor",
           monacoSettings: {
@@ -67,12 +68,25 @@ async function loadSandbox(initialFile: EditorState["files"][0]): Promise<any> {
   });
 }
 
+function setFile(sandbox, file: EditorState["files"][0]) {
+  let model = file.model;
+
+  if (!model) {
+    const monaco = (window as any).monaco;
+    model = file.model = monaco.editor.createModel(
+      file.text,
+      undefined,
+      new monaco.Uri().with({ path: file.name })
+    );
+  }
+
+  sandbox.editor.setModel(model);
+}
+
 export function Editor() {
-  const [state, setState] = useState<EditorState>(
-    JSON.parse(JSON.stringify(templates.HelloWorld))
-  );
+  const [template, setTemplate] = useState<EditorState>(templates.HelloWorld);
   const [activeFile, setActiveFile] = useState<EditorState["files"][0]>(
-    state.files[0]
+    template.files[0]
   );
   const [sandbox, setSandbox] = useState<any>();
 
@@ -80,36 +94,19 @@ export function Editor() {
     if ((window as any).editorLoaded) return;
 
     (window as any).editorLoaded = true;
-    loadSandbox(activeFile).then(setSandbox);
+    loadSandbox().then(setSandbox);
   });
 
   useEffect(() => {
     if (!sandbox) return;
-
-    const listener = sandbox.editor.onDidChangeModelContent(() => {
-      activeFile.text = sandbox.editor.getValue();
-      setState({ ...state });
-    });
-
-    return () => listener.dispose();
-  }, [sandbox, activeFile]);
-
-  useEffect(() => {
-    if (!sandbox) return;
-    sandbox.editor.setValue(activeFile.text);
-    (window as any).monaco.editor.setModelLanguage(
-      sandbox.editor.getModel(),
-      activeFile.name.endsWith(".ts")
-        ? "typescript"
-        : activeFile.name.split(".").pop()
-    );
+    setFile(sandbox, activeFile);
   }, [sandbox, activeFile]);
 
   return (
     <div className={styles.editor}>
       <nav>
         <ul>
-          {state.files.map((file) => (
+          {template.files.map((file) => (
             <li
               data-selected={activeFile === file ? "true" : undefined}
               onClick={() => {
