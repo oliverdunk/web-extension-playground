@@ -43,6 +43,8 @@ async function loadSandbox(): Promise<any> {
           domID: "editor",
           monacoSettings: {
             tabSize: 2,
+            automaticLayout: true,
+            wordWrap: "on",
           },
           // TODO: We default this to false, since we don't want to promise types
           // for packages which aren't installed, but we should provide users

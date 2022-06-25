@@ -1,6 +1,7 @@
 .editor {
   display: grid;
   grid-template-rows: auto 1fr;
+  grid-template-columns: 100%;
   grid-row-gap: 15px;
   overflow: hidden;
 }
