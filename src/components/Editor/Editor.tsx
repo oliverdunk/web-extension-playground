@@ -70,6 +70,24 @@ async function loadSandbox(): Promise<any> {
   });
 }
 
+async function getOutput(file: EditorState["files"][0]) {
+  if (!file.model) return file.text;
+  if (!file.name.endsWith(".ts")) return file.model.getValue();
+
+  const monaco = (window as any).monaco;
+  const worker = await (
+    await monaco.languages.typescript.getTypeScriptWorker()
+  )(file.model.uri);
+  const output = await worker.getEmitOutput(file.model.uri.toString());
+  return output.outputFiles[0].text;
+}
+
+async function downloadProject(state: EditorState) {
+  for (const file of state.files) {
+    console.log(file.name, await getOutput(file));
+  }
+}
+
 function setFile(sandbox, file: EditorState["files"][0]) {
   let model = file.model;
 
@@ -119,6 +137,7 @@ export function Editor() {
             </li>
           ))}
         </ul>
+        <button onClick={() => downloadProject(template)}>Download</button>
       </nav>
       <div id="editor"></div>
     </div>
