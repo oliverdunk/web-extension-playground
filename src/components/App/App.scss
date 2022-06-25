@@ -1,0 +1,18 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial;
+}
+
+.app {
+  display: grid;
+  grid-template-columns: 230px 1fr;
+  min-height: 100vh;
+}
+
+@media(max-width: 700px) {
+  .app {
+    grid-template-columns: unset;
+    grid-template-rows: auto 1fr;
+  }
+}

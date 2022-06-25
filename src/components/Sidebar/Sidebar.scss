@@ -1,0 +1,60 @@
+.sidebar {
+  background: #fbfbfb;
+
+  h1 {
+    font-size: 20px;
+    padding: 0 20px;
+    margin-bottom: 15px;
+  }
+
+  h2 {
+    background: #272727;
+    margin: 0;
+    padding: 5px 30px;
+    color: white;
+    font-weight: normal;
+    text-transform: uppercase;
+    text-align: center;
+    font-size: 15px;
+
+    &:not(:first-of-type) {
+      margin-top: 20px;
+    }
+  }
+
+  ul {
+    margin: 0;
+    padding: 0;
+
+    li {
+      padding: 5px 10px;
+      background-color: white;
+      font-size: 14px;
+      text-align: center;
+      user-select: none;
+
+      &:hover {
+        background: #ebebeb;
+        cursor: pointer;
+      }
+
+      &[data-selected] {
+        background: #0051f8;
+        color: white;
+
+        &:hover {
+          background: #0245d0;
+        }
+      }
+    }
+  }
+}
+
+// Hidden by default on mobile
+@media(max-width: 700px) {
+  .sidebar {
+    h2, ul {
+      display: none;
+    }
+  }
+}

@@ -1,0 +1,37 @@
+.editor {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  grid-row-gap: 15px;
+  overflow: hidden;
+}
+
+nav {
+  width: 100%;
+  background: #303030;
+
+  ul {
+    margin: 10px;
+    padding-left: 0;
+
+    li {
+      display: inline-block;
+      cursor: pointer;
+      background: #383838;
+      color: white;
+      opacity: 0.5;
+      padding: 5px 10px;
+      margin-right: 10px;
+      min-width: 20px;
+      text-align: center;
+      font-size: 15px;
+
+      &:hover {
+        opacity: 0.8;
+      }
+
+      &[data-selected] {
+        opacity: 1;
+      }
+    }
+  }
+}

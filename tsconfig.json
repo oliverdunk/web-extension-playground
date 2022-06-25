@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "lib": [
+      "ES2015",
+      "dom"
+    ],
+    "jsx": "react-jsx",
+    "typeRoots": [
+      "./src/types"
+    ]
+  }
+}
