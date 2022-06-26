@@ -104,6 +104,17 @@
       }
     }
   }
+
+  .about {
+    text-align: center;
+    a {
+      display: inline-block;
+      margin: auto;
+      cursor: pointer;
+      margin-top: 20px;
+      opacity: 0.8;
+    }
+  }
 }
 
 // Hidden by default on mobile
@@ -115,8 +126,12 @@
       }
     }
 
+    .about {
+      margin-bottom: 20px;
+    }
+
     &[aria-expanded="false"] {
-      h2, ul {
+      .menu {
         display: none;
       }
     }

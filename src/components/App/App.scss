@@ -16,6 +16,8 @@ body {
   min-height: 100vh;
 
   nav.docs {
+    display: flex;
+    justify-content: space-between;
     background: #f3f3f3;
     margin: 0;
     color: black;
@@ -45,6 +47,17 @@ body {
         }
       }
     }
+
+    a.git {
+      display: flex;
+      align-items: center;
+      color: currentColor !important;
+      text-decoration: none;
+
+      svg {
+        margin-right: 5px;
+      }
+    }
   }
 }
 
@@ -60,7 +73,7 @@ body {
     grid-template-rows: auto 1fr;
   }
 
-  nav.docs {
+  .app nav.docs {
     display: none;
   }
 }

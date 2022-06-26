@@ -1,3 +1,4 @@
+import { BsGithub } from "react-icons/bs";
 import { Editor } from "../Editor/Editor";
 import { Sidebar } from "../Sidebar/Sidebar";
 import { StateProvider } from "../StateProvider/StateProvider";
@@ -39,6 +40,13 @@ export function App() {
               </a>
             </li>
           </ul>
+          <a
+            className={styles.git}
+            href="https://github.com/oliverdunk/web-extension-playground"
+            target="_blank"
+          >
+            <BsGithub /> GitHub
+          </a>
         </nav>
         <div className={styles.main}>
           <Sidebar />

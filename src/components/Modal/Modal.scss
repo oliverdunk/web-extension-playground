@@ -28,6 +28,11 @@
     margin: 0;
   }
 
+  a {
+    color: currentColor !important;
+    opacity: 0.6;
+  }
+
   button[type="submit"] {
     background: #60b200;
     border: none;
