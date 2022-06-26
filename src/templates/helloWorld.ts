@@ -1,10 +1,12 @@
-import { EditorState } from "./Editor";
+import { Template } from "./index";
 
-export const HelloWorld: EditorState = {
+export const HelloWorld: Template = {
+  name: "Hello World",
   files: [
     {
       name: "manifest.json",
-      text: `
+      text: () =>
+        `
 {
   "name": "Hello World",
   "version": "0.1",
@@ -18,8 +20,9 @@ export const HelloWorld: EditorState = {
     },
     {
       name: "background.ts",
-      text: `
-browser.runtime.onInstalled.addListener((details) => {
+      text: (global) =>
+        `
+${global}.runtime.onInstalled.addListener((details) => {
   console.log("Extension has been installed. Reason:", details.reason);
 });
 

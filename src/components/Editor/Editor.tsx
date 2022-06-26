@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import styles from "./Editor.scss";
-import * as templates from "./templates";
+import { Template, templates } from "../../templates";
 import browserTypesUrl from "url:../../static/browser.d.ts.txt";
 import JSZip from "jszip";
 import { downloadBlob } from "../../utils/download";
@@ -9,6 +9,10 @@ import type {
   SandboxConfig,
   TypeScriptWorker,
 } from "@typescript/sandbox";
+import {
+  PlaygroundContext,
+  PlaygroundState,
+} from "../StateProvider/StateProvider";
 
 window.require.config({
   paths: {
@@ -117,10 +121,31 @@ function setFile(sandbox, file: EditorState["files"][0]) {
   sandbox.editor.setModel(model);
 }
 
+function loadTemplate(
+  template: Template,
+  browserGlobal: "chrome" | "browser"
+): EditorState {
+  return {
+    files: template.files.map((f) => ({
+      name: f.name,
+      text: f.text(browserGlobal),
+    })),
+  };
+}
+
+function getBrowserGlobal(state: PlaygroundState) {
+  return state.selectedBrowser === "Chrome" && !state.includePolyfill
+    ? "chrome"
+    : "browser";
+}
+
 export function Editor() {
-  const [template, setTemplate] = useState<EditorState>(templates.HelloWorld);
+  const { playgroundState, setPlaygroundState } = useContext(PlaygroundContext);
+  const [state, setState] = useState<EditorState>(
+    loadTemplate(templates[0], getBrowserGlobal(playgroundState))
+  );
   const [activeFile, setActiveFile] = useState<EditorState["files"][0]>(
-    template.files[0]
+    state.files[0]
   );
   const [sandbox, setSandbox] = useState<Sandbox>();
 
@@ -140,7 +165,7 @@ export function Editor() {
     <div className={styles.editor}>
       <nav>
         <ul>
-          {template.files.map((file) => (
+          {state.files.map((file) => (
             <li
               key={file.name}
               data-selected={activeFile === file ? "true" : undefined}
@@ -152,7 +177,7 @@ export function Editor() {
             </li>
           ))}
         </ul>
-        <button onClick={() => downloadProject(template)}>Download</button>
+        <button onClick={() => downloadProject(state)}>Download</button>
       </nav>
       <div id="editor"></div>
     </div>
