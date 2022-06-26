@@ -7,7 +7,12 @@ import {
   PlaygroundContext,
   PlaygroundState,
 } from "../StateProvider/StateProvider";
-import { BsCaretDownFill, BsCaretUpFill } from "react-icons/bs";
+import {
+  BsCaretDownFill,
+  BsCaretUpFill,
+  BsCheckCircle,
+  BsCheckCircleFill,
+} from "react-icons/bs";
 
 export function Sidebar() {
   const { playgroundState, setPlaygroundState } = useContext(PlaygroundContext);
@@ -79,6 +84,24 @@ export function Sidebar() {
             {v === "MV2" ? "Manifest V2" : "Manifest V3"}
           </li>
         ))}
+      </ul>
+      <h2>Settings</h2>
+      <ul>
+        <li
+          onClick={() =>
+            setPlaygroundState({
+              ...playgroundState,
+              includePolyfill: !playgroundState.includePolyfill,
+            })
+          }
+        >
+          Include browser polyfill{" "}
+          {playgroundState.includePolyfill ? (
+            <BsCheckCircleFill className={styles.filled} />
+          ) : (
+            <BsCheckCircle />
+          )}
+        </li>
       </ul>
     </div>
   );

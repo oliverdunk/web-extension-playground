@@ -15,9 +15,9 @@ export interface PlaygroundState {
 export const PlaygroundContext = React.createContext<{
   playgroundState: PlaygroundState;
   setPlaygroundState: (state: PlaygroundState) => void;
-}>(undefined);
+}>(undefined as any);
 
-export function StateProvider({ children }) {
+export function StateProvider({ children }: { children: JSX.Element }) {
   const [playgroundState, setPlaygroundState] = useState<PlaygroundState>({
     selectedTemplate: templates[0],
     selectedBrowser: "Chrome",

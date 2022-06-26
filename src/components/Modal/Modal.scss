@@ -25,5 +25,9 @@
     cursor: pointer;
     text-transform: uppercase;
     color: white;
+
+    &:hover {
+      background: #5ba800;
+    }
   }
 }

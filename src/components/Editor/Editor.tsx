@@ -13,7 +13,7 @@ import {
   PlaygroundContext,
   PlaygroundState,
 } from "../StateProvider/StateProvider";
-import { BsDownload, BsTrash } from "react-icons/bs/index";
+import { BsDownload, BsLink45Deg, BsTrash } from "react-icons/bs/index";
 import { Modal } from "../Modal/Modal";
 
 window.require.config({
@@ -87,7 +87,10 @@ async function loadSandbox(): Promise<Sandbox> {
   });
 }
 
-async function getOutput(file: EditorState["files"][0]) {
+async function getOutput(
+  file: EditorState["files"][0],
+  includePolyfill: boolean
+) {
   if (!file.model) return file.text;
   if (!file.name.endsWith(".ts")) return file.model.getValue();
 
@@ -95,14 +98,28 @@ async function getOutput(file: EditorState["files"][0]) {
     await monaco.languages.typescript.getTypeScriptWorker()
   )(file.model.uri);
   const output = await worker.getEmitOutput(file.model.uri.toString());
-  return output.outputFiles[0].text;
+  let text = output.outputFiles[0].text;
+
+  if (file.name === "background.ts" && includePolyfill) {
+    const polyfillResponse = await fetch(
+      "https://unpkg.com/webextension-polyfill@0.9.0/dist/browser-polyfill.min.js"
+    );
+    const polyfill = await polyfillResponse.text();
+
+    text = polyfill + text;
+  }
+
+  return text;
 }
 
-async function downloadProject(state: EditorState) {
+async function downloadProject(state: EditorState, includePolyfill: boolean) {
   const zip = new JSZip();
 
   for (const file of state.files) {
-    zip.file(file.name.replace(/.ts$/, ".js"), await getOutput(file));
+    zip.file(
+      file.name.replace(/.ts$/, ".js"),
+      await getOutput(file, includePolyfill)
+    );
   }
 
   const blob = await zip.generateAsync({ type: "blob" });
@@ -172,7 +189,7 @@ export function Editor() {
     EditorState["files"][0] | undefined
   >(undefined);
   const [sandbox, setSandbox] = useState<Sandbox>();
-  const [showingDownloadModal, setShowingDownloadModal] = useState(false);
+  const [showingSafariModal, setShowingSafariModal] = useState(false);
   const [addingFile, setAddingFile] = useState(false);
 
   useEffect(() => {
@@ -277,20 +294,29 @@ export function Editor() {
             )}
           </li>
         </ul>
-        <button
-          onClick={() => {
-            downloadProject(state);
+        <div className={styles.actions}>
+          <button
+            onClick={() => {
+              downloadProject(
+                state,
+                playgroundState.includePolyfill &&
+                  playgroundState.selectedBrowser === "Chrome"
+              );
 
-            if (playgroundState.selectedBrowser === "Safari") {
-              setShowingDownloadModal(true);
-            }
-          }}
-        >
-          <BsDownload />
-        </button>
+              if (playgroundState.selectedBrowser === "Safari") {
+                setShowingSafariModal(true);
+              }
+            }}
+          >
+            <BsDownload />
+          </button>
+          <button className={styles.share}>
+            <BsLink45Deg />
+          </button>
+        </div>
       </nav>
       <div id="editor"></div>
-      <Modal isOpen={showingDownloadModal}>
+      <Modal isOpen={showingSafariModal}>
         <h1>Using your Safari download</h1>
         <p>
           Safari requires extensions to be part of an enclosing app, which
@@ -298,7 +324,7 @@ export function Editor() {
           following on the resulting folder:
         </p>
         <code>xcrun safari-web-extension-converter extension</code>
-        <button onClick={() => setShowingDownloadModal(false)}>Ok</button>
+        <button onClick={() => setShowingSafariModal(false)}>Ok</button>
       </Modal>
     </div>
   );

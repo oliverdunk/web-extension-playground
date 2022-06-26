@@ -47,6 +47,9 @@
     list-style: none;
 
     li {
+      display: flex;
+      align-items: center;
+      justify-content: center;
       padding: 5px 10px;
       background-color: white;
       font-size: 14px;
@@ -64,6 +67,14 @@
 
         &:hover {
           background: #0245d0;
+        }
+      }
+
+      svg {
+        margin-left: 5px;
+
+        &.filled {
+          color: #0051f8;
         }
       }
     }
