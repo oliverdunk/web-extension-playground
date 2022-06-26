@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "Playground environment for building Web Extensions",
   "scripts": {
-    "start": "npx parcel src/index.html"
+    "start": "npx parcel src/index.html",
+    "build": "rm -rf dist && npx parcel build src/index.html --no-source-maps"
   },
   "author": "Oliver Dunk",
   "license": "MIT",
