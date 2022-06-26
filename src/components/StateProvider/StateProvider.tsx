@@ -1,9 +1,13 @@
 import React, { useState } from "react";
 import { Template, templates } from "../../templates";
 
+export type Browser = "Chrome" | "Firefox" | "Safari";
+export type ManifestVersion = "MV2" | "MV3";
+
 export interface PlaygroundState {
   selectedTemplate: Template;
-  selectedBrowser: "Chrome" | "Firefox" | "Safari";
+  selectedBrowser: Browser;
+  manifestVersion: ManifestVersion;
   includePolyfill: boolean;
 }
 
@@ -16,6 +20,7 @@ export function StateProvider({ children }) {
   const [playgroundState, setPlaygroundState] = useState<PlaygroundState>({
     selectedTemplate: templates[0],
     selectedBrowser: "Chrome",
+    manifestVersion: "MV2",
     includePolyfill: false,
   });
 

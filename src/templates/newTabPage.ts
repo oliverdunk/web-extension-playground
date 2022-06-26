@@ -2,25 +2,13 @@ import { Template } from "./index";
 
 export const NewTabPage: Template = {
   name: "New Tab Page",
-  files: [
-    {
-      name: "manifest.json",
-      text: () =>
-        `
-{
-  "name": "New Tab Page",
-  "version": "0.1",
-  "manifest_version": 2,
-  "description": "Basic New Tab Page Extension",
-  "background": {
-    "scripts": ["background.js"]
+  manifest: {
+    name: "New tab Page",
+    description: "Basic New Tab Page Extension",
+    backgroundScripts: ["background.js"],
+    newTabPage: "new_tab_page.html",
   },
-  "chrome_url_overrides" : {
-    "newtab": "new_tab_page.html"
-  }
-}
-      `.trim(),
-    },
+  files: [
     {
       name: "background.ts",
       text: (global) =>

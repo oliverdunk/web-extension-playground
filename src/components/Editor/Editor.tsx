@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import styles from "./Editor.scss";
-import { Template, templates } from "../../templates";
+import { generateManifest, Template, templates } from "../../templates";
 import browserTypesUrl from "url:../../static/browser.d.ts.txt";
 import JSZip from "jszip";
 import { downloadBlob } from "../../utils/download";
@@ -123,14 +123,23 @@ function setFile(sandbox, file: EditorState["files"][0]) {
 
 function loadTemplate(
   template: Template,
-  browserGlobal: "chrome" | "browser"
+  playgroundState: PlaygroundState
 ): EditorState {
-  return {
-    files: template.files.map((f) => ({
-      name: f.name,
-      text: f.text(browserGlobal),
-    })),
-  };
+  const files = template.files.map((f) => ({
+    name: f.name,
+    text: f.text(getBrowserGlobal(playgroundState)),
+  }));
+
+  files.unshift({
+    name: "manifest.json",
+    text: generateManifest(
+      playgroundState.selectedBrowser,
+      playgroundState.manifestVersion,
+      template.manifest
+    ),
+  });
+
+  return { files };
 }
 
 function getBrowserGlobal(state: PlaygroundState) {
@@ -165,11 +174,15 @@ export function Editor() {
 
     const newState = loadTemplate(
       playgroundState.selectedTemplate,
-      getBrowserGlobal(playgroundState)
+      playgroundState
     );
     setState(newState);
     setActiveFile(newState.files[0]);
-  }, [playgroundState.selectedTemplate]);
+  }, [
+    playgroundState.selectedTemplate,
+    playgroundState.selectedBrowser,
+    playgroundState.manifestVersion,
+  ]);
 
   if (!state) return null;
 

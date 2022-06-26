@@ -5,7 +5,8 @@ import { PlaygroundContext } from "../StateProvider/StateProvider";
 
 export function Sidebar() {
   const { playgroundState, setPlaygroundState } = useContext(PlaygroundContext);
-  const { selectedTemplate, selectedBrowser } = playgroundState;
+  const { selectedTemplate, selectedBrowser, manifestVersion } =
+    playgroundState;
 
   return (
     <div className={styles.sidebar}>
@@ -37,6 +38,19 @@ export function Sidebar() {
             </li>
           )
         )}
+      </ul>
+      <h2>API Version</h2>
+      <ul>
+        {["MV2", "MV3"].map((v: "MV2" | "MV3") => (
+          <li
+            data-selected={manifestVersion === v ? "true" : undefined}
+            onClick={() =>
+              setPlaygroundState({ ...playgroundState, manifestVersion: v })
+            }
+          >
+            {v === "MV2" ? "Manifest V2" : "Manifest V3"}
+          </li>
+        ))}
       </ul>
     </div>
   );

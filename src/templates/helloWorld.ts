@@ -2,22 +2,12 @@ import { Template } from "./index";
 
 export const HelloWorld: Template = {
   name: "Hello World",
+  manifest: {
+    name: "Hello World",
+    description: "Basic Hello World Extension",
+    backgroundScripts: ["background.js"],
+  },
   files: [
-    {
-      name: "manifest.json",
-      text: () =>
-        `
-{
-  "name": "Hello World",
-  "version": "0.1",
-  "manifest_version": 2,
-  "description": "Basic Hello World Extension",
-  "background": {
-    "scripts": ["background.js"]
-  }
-}
-      `.trim(),
-    },
     {
       name: "background.ts",
       text: (global) =>
