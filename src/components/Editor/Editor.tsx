@@ -170,7 +170,7 @@ export function Editor() {
     });
 
     return () => changeListener.dispose();
-  }, [sandbox]);
+  }, [sandbox, playgroundState]);
 
   useEffect(() => {
     if (!sandbox || !activeFile) return;
