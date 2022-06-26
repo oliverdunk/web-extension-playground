@@ -13,7 +13,7 @@ import {
   PlaygroundContext,
   PlaygroundState,
 } from "../StateProvider/StateProvider";
-import { BsDownload } from "react-icons/bs/index";
+import { BsDownload, BsTrash } from "react-icons/bs/index";
 import { Modal } from "../Modal/Modal";
 
 window.require.config({
@@ -173,6 +173,7 @@ export function Editor() {
   >(undefined);
   const [sandbox, setSandbox] = useState<Sandbox>();
   const [showingDownloadModal, setShowingDownloadModal] = useState(false);
+  const [addingFile, setAddingFile] = useState(false);
 
   useEffect(() => {
     if (window.editorLoaded) return;
@@ -219,7 +220,7 @@ export function Editor() {
     <div className={styles.editor}>
       <nav>
         <ul>
-          {state.files.map((file) => (
+          {state.files.map((file, index) => (
             <li
               key={file.name}
               data-selected={activeFile === file ? "true" : undefined}
@@ -228,8 +229,53 @@ export function Editor() {
               }}
             >
               {file.name}
+              {file.name !== "manifest.json" && (
+                <BsTrash
+                  onClick={(evt) => {
+                    evt.stopPropagation();
+                    file.model?.dispose();
+                    state.files.splice(index, 1);
+
+                    if (activeFile === file) {
+                      setActiveFile(state.files[index - 1]);
+                    }
+
+                    setState({ ...state });
+                  }}
+                />
+              )}
             </li>
           ))}
+          <li
+            onClick={() => setAddingFile(true)}
+            data-selected={addingFile ? "true" : undefined}
+          >
+            {addingFile ? (
+              <input
+                type="text"
+                placeholder="file.ts"
+                autoFocus
+                onBlur={() => setAddingFile(false)}
+                onKeyDown={(evt) => {
+                  if (evt.key === "Enter") {
+                    const name = (evt.target as HTMLInputElement).value.trim();
+                    if (!name.match(/^[a-zA-Z0-9_-]+\.[a-zA-Z]+$/)) return;
+                    if (state.files.find((f) => f.name === name)) return;
+
+                    const file = { name, text: "" };
+                    setState({
+                      ...state,
+                      files: [...state.files, file],
+                    });
+                    setActiveFile(file);
+                    setAddingFile(false);
+                  }
+                }}
+              />
+            ) : (
+              "+"
+            )}
+          </li>
         </ul>
         <button
           onClick={() => {

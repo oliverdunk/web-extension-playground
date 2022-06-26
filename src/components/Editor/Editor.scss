@@ -15,25 +15,44 @@ nav {
   ul {
     margin: 10px;
     padding-left: 0;
+    white-space: nowrap;
+    overflow-y: auto;
 
     li {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
       cursor: pointer;
       background: #383838;
-      color: white;
-      opacity: 0.5;
+      color: rgba(255, 255, 255, 0.5);
       padding: 5px 10px;
       margin-right: 10px;
-      min-width: 20px;
+      min-width: 10px;
       text-align: center;
       font-size: 15px;
 
       &:hover {
-        opacity: 0.8;
+        color: rgba(255, 255, 255, 0.8);
       }
 
       &[data-selected] {
+        color: rgba(255, 255, 255, 1);
+      }
+
+      input {
+        padding: 0 3px;
+        background: none;
+        border: none;
+        color: white;
         opacity: 1;
+      }
+
+      svg {
+        margin-left: 5px;
+        color: rgba(255, 255, 255, 0.5);
+
+        &:hover {
+          color: white;
+        }
       }
     }
   }
