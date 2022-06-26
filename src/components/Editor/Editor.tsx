@@ -1,11 +1,16 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./Editor.scss";
 import * as templates from "./templates";
 import browserTypesUrl from "url:../../static/browser.d.ts.txt";
-import JSZip = require("jszip");
+import JSZip from "jszip";
 import { downloadBlob } from "../../utils/download";
+import type {
+  Sandbox,
+  SandboxConfig,
+  TypeScriptWorker,
+} from "@typescript/sandbox";
 
-(window as any).require.config({
+window.require.config({
   paths: {
     vs: "https://typescript.azureedge.net/cdn/4.0.5/monaco/min/vs",
     sandbox: "https://www.typescriptlang.org/js/sandbox",
@@ -18,11 +23,11 @@ export interface EditorState {
   files: {
     name: string;
     text: string;
-    model?: any;
+    model?: import("monaco-editor").editor.IModel;
   }[];
 }
 
-async function loadSandbox(): Promise<any> {
+async function loadSandbox(): Promise<Sandbox> {
   const browserTypesResponse = await fetch(browserTypesUrl);
   const browserTypes = await browserTypesResponse.text();
 
@@ -32,18 +37,23 @@ async function loadSandbox(): Promise<any> {
   const chromeTypes = await chromeTypesResponse.text();
 
   return new Promise((resolve) => {
-    (window as any).require(
+    window.require(
       [
         "vs/editor/editor.main",
         "vs/language/typescript/tsWorker",
         "sandbox/index",
       ],
-      (main, _tsWorker, sandboxFactory) => {
-        const sandboxConfig = {
+      (
+        main,
+        _tsWorker: TypeScriptWorker,
+        sandboxModule: typeof import("@typescript/sandbox")
+      ) => {
+        const sandboxConfig: SandboxConfig = {
           text: "",
           compilerOptions: {},
           domID: "editor",
           monacoSettings: {
+            // @ts-expect-error This type is missing from the Monaco types
             tabSize: 2,
             automaticLayout: true,
             wordWrap: "on",
@@ -54,16 +64,15 @@ async function loadSandbox(): Promise<any> {
           acquireTypes: false,
         };
 
-        const sandbox = sandboxFactory.createTypeScriptSandbox(
+        const sandbox = sandboxModule.createTypeScriptSandbox(
           sandboxConfig,
           main,
-          (window as any).ts
+          window.ts
         );
-        sandbox.languageServiceDefaults.addExtraLib(
-          browserTypes,
-          "browser.d.ts"
-        );
-        sandbox.languageServiceDefaults.addExtraLib(chromeTypes, "chrome.d.ts");
+        sandbox.languageServiceDefaults.setExtraLibs([
+          { content: browserTypes, filePath: "browser.d.ts" },
+          { content: chromeTypes, filePath: "chrome.d.ts" },
+        ]);
         sandbox.editor.focus();
 
         resolve(sandbox);
@@ -76,7 +85,6 @@ async function getOutput(file: EditorState["files"][0]) {
   if (!file.model) return file.text;
   if (!file.name.endsWith(".ts")) return file.model.getValue();
 
-  const monaco = (window as any).monaco;
   const worker = await (
     await monaco.languages.typescript.getTypeScriptWorker()
   )(file.model.uri);
@@ -99,7 +107,6 @@ function setFile(sandbox, file: EditorState["files"][0]) {
   let model = file.model;
 
   if (!model) {
-    const monaco = (window as any).monaco;
     model = file.model = monaco.editor.createModel(
       file.text,
       undefined,
@@ -115,12 +122,12 @@ export function Editor() {
   const [activeFile, setActiveFile] = useState<EditorState["files"][0]>(
     template.files[0]
   );
-  const [sandbox, setSandbox] = useState<any>();
+  const [sandbox, setSandbox] = useState<Sandbox>();
 
   useEffect(() => {
-    if ((window as any).editorLoaded) return;
+    if (window.editorLoaded) return;
 
-    (window as any).editorLoaded = true;
+    window.editorLoaded = true;
     loadSandbox().then(setSandbox);
   });
 
