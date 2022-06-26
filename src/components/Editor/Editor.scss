@@ -4,80 +4,80 @@
   grid-template-columns: 100%;
   grid-row-gap: 15px;
   overflow: hidden;
-}
-
-nav {
-  width: 100%;
-  background: #303030;
-  display: grid;
-  grid-template-columns: 1fr auto;
-
-  ul {
-    margin: 10px;
-    padding-left: 0;
-    white-space: nowrap;
-    overflow-y: auto;
-
-    li {
-      display: inline-flex;
-      align-items: center;
-      cursor: pointer;
-      background: #383838;
-      color: rgba(255, 255, 255, 0.5);
-      padding: 5px 10px;
-      margin-right: 10px;
-      min-width: 10px;
-      text-align: center;
-      font-size: 15px;
-
-      &:hover {
-        color: rgba(255, 255, 255, 0.8);
-      }
-
-      &[data-selected] {
-        color: rgba(255, 255, 255, 1);
-      }
-
-      input {
-        padding: 0 3px;
-        background: none;
-        border: none;
-        color: white;
-        opacity: 1;
-      }
-
-      svg {
-        margin-left: 5px;
+  
+  nav {
+    width: 100%;
+    background: #303030;
+    display: grid;
+    grid-template-columns: 1fr auto;
+  
+    ul {
+      margin: 10px;
+      padding-left: 0;
+      white-space: nowrap;
+      overflow-y: auto;
+  
+      li {
+        display: inline-flex;
+        align-items: center;
+        cursor: pointer;
+        background: #383838;
         color: rgba(255, 255, 255, 0.5);
-
+        padding: 5px 10px;
+        margin-right: 10px;
+        min-width: 10px;
+        text-align: center;
+        font-size: 15px;
+  
         &:hover {
+          color: rgba(255, 255, 255, 0.8);
+        }
+  
+        &[data-selected] {
+          color: rgba(255, 255, 255, 1);
+        }
+  
+        input {
+          padding: 0 3px;
+          background: none;
+          border: none;
           color: white;
+          opacity: 1;
+        }
+  
+        svg {
+          margin-left: 5px;
+          color: rgba(255, 255, 255, 0.5);
+  
+          &:hover {
+            color: white;
+          }
         }
       }
     }
-  }
-
-  .actions {
-    display: flex;
-
-    button {
-      background: none;
-      border: none;
-      color: white;
-      font-weight: bold;
-      font-size: 24px;
-      opacity: 0.8;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      margin-right: 5px;
   
-      &:hover {
-        opacity: 1;
-      }
-
-      &.share {
-        font-size: 28px;
+    .actions {
+      display: flex;
+  
+      button {
+        background: none;
+        border: none;
+        color: white;
+        font-weight: bold;
+        font-size: 24px;
+        opacity: 0.8;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        margin-right: 5px;
+    
+        &:hover {
+          opacity: 1;
+        }
+  
+        &.share {
+          font-size: 28px;
+        }
       }
     }
   }

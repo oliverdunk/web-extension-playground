@@ -6,14 +6,49 @@ body {
 }
 
 .app {
+  min-height: 100vh;
+
+  nav.docs {
+    background: #f3f3f3;
+    margin: 0;
+    color: black;
+    font-size: 14px;
+    padding: 5px 10px;
+
+    ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+
+      li {
+        display: inline-block;
+        margin-right: 20px;
+
+        a {
+          text-decoration: none;
+
+          &:active, &:visited {
+            color: black;
+          }
+        }
+      }
+    }
+  }
+}
+
+.main {
   display: grid;
   grid-template-columns: 230px 1fr;
   min-height: 100vh;
 }
 
 @media(max-width: 700px) {
-  .app {
+  .main {
     grid-template-columns: unset;
     grid-template-rows: auto 1fr;
+  }
+
+  nav.docs {
+    display: none;
   }
 }
