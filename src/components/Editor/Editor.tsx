@@ -13,6 +13,7 @@ import {
   PlaygroundContext,
   PlaygroundState,
 } from "../StateProvider/StateProvider";
+import { BsDownload } from "react-icons/bs/index";
 
 window.require.config({
   paths: {
@@ -227,7 +228,9 @@ export function Editor() {
             </li>
           ))}
         </ul>
-        <button onClick={() => downloadProject(state)}>Download</button>
+        <button onClick={() => downloadProject(state)}>
+          <BsDownload />
+        </button>
       </nav>
       <div id="editor"></div>
     </div>

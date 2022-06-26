@@ -9,6 +9,8 @@
 nav {
   width: 100%;
   background: #303030;
+  display: grid;
+  grid-template-columns: 1fr auto;
 
   ul {
     margin: 10px;
@@ -33,6 +35,23 @@ nav {
       &[data-selected] {
         opacity: 1;
       }
+    }
+  }
+
+  button {
+    background: none;
+    border: none;
+    color: white;
+    font-weight: bold;
+    font-size: 24px;
+    opacity: 0.8;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    margin-right: 5px;
+
+    &:hover {
+      opacity: 1;
     }
   }
 }
