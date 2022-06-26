@@ -9,6 +9,7 @@ export interface PlaygroundState {
   selectedBrowser: Browser;
   manifestVersion: ManifestVersion;
   includePolyfill: boolean;
+  hasEditedModel: boolean;
 }
 
 export const PlaygroundContext = React.createContext<{
@@ -22,6 +23,7 @@ export function StateProvider({ children }) {
     selectedBrowser: "Chrome",
     manifestVersion: "MV2",
     includePolyfill: false,
+    hasEditedModel: false,
   });
 
   return (

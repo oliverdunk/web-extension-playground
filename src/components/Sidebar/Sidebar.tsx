@@ -1,12 +1,30 @@
 import styles from "./Sidebar.scss";
 import { templates } from "../../templates";
 import { useContext } from "react";
-import { PlaygroundContext } from "../StateProvider/StateProvider";
+import {
+  PlaygroundContext,
+  PlaygroundState,
+} from "../StateProvider/StateProvider";
 
 export function Sidebar() {
   const { playgroundState, setPlaygroundState } = useContext(PlaygroundContext);
   const { selectedTemplate, selectedBrowser, manifestVersion } =
     playgroundState;
+
+  function setStateWithConfirmation(newState: Partial<PlaygroundState>) {
+    if (
+      !playgroundState.hasEditedModel ||
+      window.confirm(
+        "Changing the template, selected browser or API version will overwrite any changes. Continue?"
+      )
+    ) {
+      setPlaygroundState({
+        ...playgroundState,
+        hasEditedModel: false,
+        ...newState,
+      });
+    }
+  }
 
   return (
     <div className={styles.sidebar}>
@@ -17,7 +35,7 @@ export function Sidebar() {
           <li
             data-selected={selectedTemplate === t ? "true" : undefined}
             onClick={() => {
-              setPlaygroundState({ ...playgroundState, selectedTemplate: t });
+              setStateWithConfirmation({ selectedTemplate: t });
             }}
           >
             {t.name}
@@ -30,9 +48,7 @@ export function Sidebar() {
           (b: "Chrome" | "Firefox" | "Safari") => (
             <li
               data-selected={selectedBrowser === b ? "true" : undefined}
-              onClick={() =>
-                setPlaygroundState({ ...playgroundState, selectedBrowser: b })
-              }
+              onClick={() => setStateWithConfirmation({ selectedBrowser: b })}
             >
               {b}
             </li>
@@ -44,9 +60,7 @@ export function Sidebar() {
         {["MV2", "MV3"].map((v: "MV2" | "MV3") => (
           <li
             data-selected={manifestVersion === v ? "true" : undefined}
-            onClick={() =>
-              setPlaygroundState({ ...playgroundState, manifestVersion: v })
-            }
+            onClick={() => setStateWithConfirmation({ manifestVersion: v })}
           >
             {v === "MV2" ? "Manifest V2" : "Manifest V3"}
           </li>

@@ -163,6 +163,16 @@ export function Editor() {
   });
 
   useEffect(() => {
+    if (!sandbox) return;
+
+    const changeListener = sandbox.editor.onDidChangeModelContent(() => {
+      setPlaygroundState({ ...playgroundState, hasEditedModel: true });
+    });
+
+    return () => changeListener.dispose();
+  }, [sandbox]);
+
+  useEffect(() => {
     if (!sandbox || !activeFile) return;
     setFile(sandbox, activeFile);
   }, [sandbox, activeFile]);
