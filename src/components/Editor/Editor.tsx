@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import styles from "./Editor.scss";
 import * as templates from "./templates";
 import browserTypesUrl from "url:../../static/browser.d.ts.txt";
+import JSZip = require("jszip");
+import { downloadBlob } from "../../utils/download";
 
 (window as any).require.config({
   paths: {
@@ -83,9 +85,14 @@ async function getOutput(file: EditorState["files"][0]) {
 }
 
 async function downloadProject(state: EditorState) {
+  const zip = new JSZip();
+
   for (const file of state.files) {
-    console.log(file.name, await getOutput(file));
+    zip.file(file.name.replace(/.ts$/, ".js"), await getOutput(file));
   }
+
+  const blob = await zip.generateAsync({ type: "blob" });
+  downloadBlob(blob, "extension.zip");
 }
 
 function setFile(sandbox, file: EditorState["files"][0]) {
