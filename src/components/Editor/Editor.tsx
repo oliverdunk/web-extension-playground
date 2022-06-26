@@ -142,6 +142,7 @@ export function Editor() {
         <ul>
           {template.files.map((file) => (
             <li
+              key={file.name}
               data-selected={activeFile === file ? "true" : undefined}
               onClick={() => {
                 setActiveFile(file);
