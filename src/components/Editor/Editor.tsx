@@ -122,10 +122,12 @@ function setFile(sandbox, file: EditorState["files"][0]) {
 }
 
 function loadTemplate(
+  editorState: EditorState,
   template: Template,
   playgroundState: PlaygroundState
 ): EditorState {
-  const files = template.files.map((f) => ({
+  // Load in new files
+  const files = template.files.map((f): EditorState["files"][0] => ({
     name: f.name,
     text: f.text(getBrowserGlobal(playgroundState)),
   }));
@@ -139,6 +141,19 @@ function loadTemplate(
     ),
   });
 
+  // Instead of closing all tabs, update files with matching names, and discard
+  // any that are no longer needed.
+  for (const file of editorState.files) {
+    const newFile = files.find((f) => f.name === file.name);
+
+    if (newFile) {
+      file.model?.setValue(newFile.text);
+      newFile.model = file.model;
+    } else {
+      file.model?.dispose();
+    }
+  }
+
   return { files };
 }
 
@@ -150,7 +165,7 @@ function getBrowserGlobal(state: PlaygroundState) {
 
 export function Editor() {
   const { playgroundState, setPlaygroundState } = useContext(PlaygroundContext);
-  const [state, setState] = useState<EditorState>(undefined);
+  const [state, setState] = useState<EditorState>({ files: [] });
   const [activeFile, setActiveFile] =
     useState<EditorState["files"][0]>(undefined);
   const [sandbox, setSandbox] = useState<Sandbox>();
@@ -163,6 +178,28 @@ export function Editor() {
   });
 
   useEffect(() => {
+    if (!sandbox || !activeFile) return;
+    setFile(sandbox, activeFile);
+  }, [sandbox, activeFile]);
+
+  useEffect(() => {
+    const newState = loadTemplate(
+      state,
+      playgroundState.selectedTemplate,
+      playgroundState
+    );
+    setState(newState);
+    setActiveFile(
+      (activeFile && newState.files.find((f) => f.name === activeFile.name)) ??
+        newState.files[0]
+    );
+  }, [
+    playgroundState.selectedTemplate,
+    playgroundState.selectedBrowser,
+    playgroundState.manifestVersion,
+  ]);
+
+  useEffect(() => {
     if (!sandbox) return;
 
     const changeListener = sandbox.editor.onDidChangeModelContent(() => {
@@ -171,28 +208,6 @@ export function Editor() {
 
     return () => changeListener.dispose();
   }, [sandbox, playgroundState]);
-
-  useEffect(() => {
-    if (!sandbox || !activeFile) return;
-    setFile(sandbox, activeFile);
-  }, [sandbox, activeFile]);
-
-  useEffect(() => {
-    if (state) {
-      monaco.editor.getModels().forEach((model) => model.dispose());
-    }
-
-    const newState = loadTemplate(
-      playgroundState.selectedTemplate,
-      playgroundState
-    );
-    setState(newState);
-    setActiveFile(newState.files[0]);
-  }, [
-    playgroundState.selectedTemplate,
-    playgroundState.selectedBrowser,
-    playgroundState.manifestVersion,
-  ]);
 
   if (!state) return null;
 
