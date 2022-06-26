@@ -327,7 +327,10 @@ export function Editor() {
           </button>
           <button
             className={styles.share}
-            onClick={() => setShowingShareModal(true)}
+            onClick={() => {
+              updateHash(playgroundState, state);
+              setShowingShareModal(true);
+            }}
           >
             <BsLink45Deg />
           </button>
