@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import styles from "./Editor.scss";
-import { generateManifest, Template, templates } from "../../templates";
+import { generateManifest, Template } from "../../templates";
 import browserTypesUrl from "url:../../static/browser.d.ts.txt";
 import JSZip from "jszip";
 import { downloadBlob } from "../../utils/download";
@@ -14,6 +14,7 @@ import {
   PlaygroundState,
 } from "../StateProvider/StateProvider";
 import { BsDownload } from "react-icons/bs/index";
+import { Modal } from "../Modal/Modal";
 
 window.require.config({
   paths: {
@@ -49,7 +50,7 @@ async function loadSandbox(): Promise<Sandbox> {
         "sandbox/index",
       ],
       (
-        main,
+        main: any,
         _tsWorker: TypeScriptWorker,
         sandboxModule: typeof import("@typescript/sandbox")
       ) => {
@@ -108,7 +109,7 @@ async function downloadProject(state: EditorState) {
   downloadBlob(blob, "extension.zip");
 }
 
-function setFile(sandbox, file: EditorState["files"][0]) {
+function setFile(sandbox: Sandbox, file: EditorState["files"][0]) {
   let model = file.model;
 
   if (!model) {
@@ -167,9 +168,11 @@ function getBrowserGlobal(state: PlaygroundState) {
 export function Editor() {
   const { playgroundState, setPlaygroundState } = useContext(PlaygroundContext);
   const [state, setState] = useState<EditorState>({ files: [] });
-  const [activeFile, setActiveFile] =
-    useState<EditorState["files"][0]>(undefined);
+  const [activeFile, setActiveFile] = useState<
+    EditorState["files"][0] | undefined
+  >(undefined);
   const [sandbox, setSandbox] = useState<Sandbox>();
+  const [showingDownloadModal, setShowingDownloadModal] = useState(false);
 
   useEffect(() => {
     if (window.editorLoaded) return;
@@ -228,11 +231,29 @@ export function Editor() {
             </li>
           ))}
         </ul>
-        <button onClick={() => downloadProject(state)}>
+        <button
+          onClick={() => {
+            downloadProject(state);
+
+            if (playgroundState.selectedBrowser === "Safari") {
+              setShowingDownloadModal(true);
+            }
+          }}
+        >
           <BsDownload />
         </button>
       </nav>
       <div id="editor"></div>
+      <Modal isOpen={showingDownloadModal}>
+        <h1>Using your Safari download</h1>
+        <p>
+          Safari requires extensions to be part of an enclosing app, which
+          requires an Xcode project. Unzip the downloaded file and run the
+          following on the resulting folder:
+        </p>
+        <code>xcrun safari-web-extension-converter extension</code>
+        <button onClick={() => setShowingDownloadModal(false)}>Ok</button>
+      </Modal>
     </div>
   );
 }

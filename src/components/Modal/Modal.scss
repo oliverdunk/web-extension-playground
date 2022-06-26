@@ -1,0 +1,29 @@
+.modal {
+  max-width: min(400px, min(400px, calc(100% - 150px)));
+  background: white;
+  padding: 10px;
+  border-radius: 5px;
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: -1px 1px 11px 0px #31313129;
+  padding: 40px;
+
+  h1 {
+    margin: 0;
+  }
+
+  button {
+    background: #60b200;
+    border: none;
+    margin-top: 20px;
+    display: block;
+    padding: 10px 18px;
+    width: 100%;
+    border-radius: 5px;
+    cursor: pointer;
+    text-transform: uppercase;
+    color: white;
+  }
+}
