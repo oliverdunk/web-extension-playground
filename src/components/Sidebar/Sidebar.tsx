@@ -1,15 +1,20 @@
 import styles from "./Sidebar.scss";
 import { templates } from "../../templates";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import {
+  Browser,
+  ManifestVersion,
   PlaygroundContext,
   PlaygroundState,
 } from "../StateProvider/StateProvider";
+import { BsCaretDownFill, BsCaretUpFill } from "react-icons/bs";
 
 export function Sidebar() {
   const { playgroundState, setPlaygroundState } = useContext(PlaygroundContext);
   const { selectedTemplate, selectedBrowser, manifestVersion } =
     playgroundState;
+
+  const [showingMobileMenu, setShowingMobileMenu] = useState(false);
 
   function setStateWithConfirmation(newState: Partial<PlaygroundState>) {
     if (
@@ -26,9 +31,20 @@ export function Sidebar() {
     }
   }
 
+  const browsers: Browser[] = ["Chrome", "Firefox", "Safari"];
+  const manifestVersions: ManifestVersion[] = ["MV2", "MV3"];
+
   return (
-    <div className={styles.sidebar}>
-      <h1>WebExtension Playground</h1>
+    <div
+      className={styles.sidebar}
+      aria-expanded={showingMobileMenu ? "true" : "false"}
+    >
+      <header>
+        <h1>WebExtension Playground</h1>
+        <button onClick={() => setShowingMobileMenu(!showingMobileMenu)}>
+          {!showingMobileMenu ? <BsCaretDownFill /> : <BsCaretUpFill />}
+        </button>
+      </header>
       <h2>Templates</h2>
       <ul>
         {templates.map((t) => (
@@ -44,20 +60,18 @@ export function Sidebar() {
       </ul>
       <h2>Browsers</h2>
       <ul>
-        {["Chrome", "Firefox", "Safari"].map(
-          (b: "Chrome" | "Firefox" | "Safari") => (
-            <li
-              data-selected={selectedBrowser === b ? "true" : undefined}
-              onClick={() => setStateWithConfirmation({ selectedBrowser: b })}
-            >
-              {b}
-            </li>
-          )
-        )}
+        {browsers.map((b: Browser) => (
+          <li
+            data-selected={selectedBrowser === b ? "true" : undefined}
+            onClick={() => setStateWithConfirmation({ selectedBrowser: b })}
+          >
+            {b}
+          </li>
+        ))}
       </ul>
       <h2>API Version</h2>
       <ul>
-        {["MV2", "MV3"].map((v: "MV2" | "MV3") => (
+        {manifestVersions.map((v: "MV2" | "MV3") => (
           <li
             data-selected={manifestVersion === v ? "true" : undefined}
             onClick={() => setStateWithConfirmation({ manifestVersion: v })}

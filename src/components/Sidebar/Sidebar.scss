@@ -1,11 +1,30 @@
 .sidebar {
   background: #fbfbfb;
 
-  h1 {
-    font-size: 20px;
-    padding: 0 20px;
-    margin-bottom: 15px;
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    h1 {
+      font-size: 20px;
+      padding: 0 20px;
+      margin-bottom: 15px;
+    }
+
+    button {
+      background: none;
+      border: none;
+      font-size: 25px;
+      margin-right: 10px;
+      cursor: pointer;
+      padding-top: 5px;
+
+      // No need to show on desktop
+      display: none;
+    }
   }
+
 
   h2 {
     background: #272727;
@@ -54,8 +73,16 @@
 // Hidden by default on mobile
 @media(max-width: 700px) {
   .sidebar {
-    h2, ul {
-      display: none;
+    header {
+      button {
+        display: block;
+      }
+    }
+
+    &[aria-expanded="false"] {
+      h2, ul {
+        display: none;
+      }
     }
   }
 }
