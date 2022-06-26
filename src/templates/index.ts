@@ -1,4 +1,5 @@
 import { HelloWorld } from "./helloWorld";
+import { NewTabPage } from "./newTabPage";
 
 export interface Template {
   name: string;
@@ -8,4 +9,4 @@ export interface Template {
   }[];
 }
 
-export const templates = [HelloWorld];
+export const templates = [HelloWorld, NewTabPage];

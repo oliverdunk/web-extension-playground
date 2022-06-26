@@ -13,7 +13,12 @@ export function Sidebar() {
       <h2>Templates</h2>
       <ul>
         {templates.map((t) => (
-          <li data-selected={selectedTemplate === t ? "true" : undefined}>
+          <li
+            data-selected={selectedTemplate === t ? "true" : undefined}
+            onClick={() => {
+              setPlaygroundState({ ...playgroundState, selectedTemplate: t });
+            }}
+          >
             {t.name}
           </li>
         ))}

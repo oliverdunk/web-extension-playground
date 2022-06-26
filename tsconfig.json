@@ -8,6 +8,7 @@
     "typeRoots": [
       "./src/types"
     ],
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "strict": true
   }
 }

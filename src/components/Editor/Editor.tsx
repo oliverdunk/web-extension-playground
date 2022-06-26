@@ -141,12 +141,9 @@ function getBrowserGlobal(state: PlaygroundState) {
 
 export function Editor() {
   const { playgroundState, setPlaygroundState } = useContext(PlaygroundContext);
-  const [state, setState] = useState<EditorState>(
-    loadTemplate(templates[0], getBrowserGlobal(playgroundState))
-  );
-  const [activeFile, setActiveFile] = useState<EditorState["files"][0]>(
-    state.files[0]
-  );
+  const [state, setState] = useState<EditorState>(undefined);
+  const [activeFile, setActiveFile] =
+    useState<EditorState["files"][0]>(undefined);
   const [sandbox, setSandbox] = useState<Sandbox>();
 
   useEffect(() => {
@@ -157,9 +154,24 @@ export function Editor() {
   });
 
   useEffect(() => {
-    if (!sandbox) return;
+    if (!sandbox || !activeFile) return;
     setFile(sandbox, activeFile);
   }, [sandbox, activeFile]);
+
+  useEffect(() => {
+    if (state) {
+      monaco.editor.getModels().forEach((model) => model.dispose());
+    }
+
+    const newState = loadTemplate(
+      playgroundState.selectedTemplate,
+      getBrowserGlobal(playgroundState)
+    );
+    setState(newState);
+    setActiveFile(newState.files[0]);
+  }, [playgroundState.selectedTemplate]);
+
+  if (!state) return null;
 
   return (
     <div className={styles.editor}>
