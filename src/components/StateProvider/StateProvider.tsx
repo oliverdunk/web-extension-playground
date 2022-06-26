@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Template, templates } from "../../templates";
+import { parseHash } from "../../utils/hash";
+import { EditorState } from "../Editor/Editor";
 
 export type Browser = "Chrome" | "Firefox" | "Safari";
 export type ManifestVersion = "MV2" | "MV3";
@@ -11,6 +13,7 @@ export interface PlaygroundState {
   manifestVersion: ManifestVersion;
   includePolyfill: boolean;
   theme: Theme;
+  initialEditorState?: EditorState;
   hasEditedModel: boolean;
 }
 
@@ -19,17 +22,33 @@ export const PlaygroundContext = React.createContext<{
   setPlaygroundState: (state: PlaygroundState) => void;
 }>(undefined as any);
 
-export function StateProvider({ children }: { children: JSX.Element }) {
-  const [playgroundState, setPlaygroundState] = useState<PlaygroundState>({
-    selectedTemplate: templates[0],
-    selectedBrowser: "Chrome",
-    manifestVersion: "MV2",
-    includePolyfill: false,
+function getInitialState(): PlaygroundState {
+  const hashState = parseHash();
+
+  return {
+    selectedTemplate:
+      (hashState && templates.find((t) => t.id === hashState.templateId)) ??
+      templates[0],
+    selectedBrowser: hashState?.browser ?? "Chrome",
+    manifestVersion: hashState?.manifestVersion ?? "MV2",
+    includePolyfill: hashState?.includePolyfill ?? false,
     theme: window.matchMedia("(prefers-color-scheme: dark)").matches
       ? "Dark"
       : "Light",
-    hasEditedModel: false,
-  });
+    initialEditorState: hashState && {
+      files: hashState.files.map((f) => ({
+        name: f.name,
+        text: f.text,
+      })),
+    },
+    hasEditedModel: !!hashState,
+  };
+}
+
+export function StateProvider({ children }: { children: JSX.Element }) {
+  const [playgroundState, setPlaygroundState] = useState<PlaygroundState>(
+    getInitialState()
+  );
 
   useEffect(() => {
     document.body.setAttribute(

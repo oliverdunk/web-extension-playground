@@ -15,6 +15,7 @@ import {
 } from "../StateProvider/StateProvider";
 import { BsDownload, BsLink45Deg, BsTrash } from "react-icons/bs/index";
 import { Modal } from "../Modal/Modal";
+import { updateHash } from "../../utils/hash";
 
 window.require.config({
   paths: {
@@ -141,7 +142,7 @@ function setFile(sandbox: Sandbox, file: EditorState["files"][0]) {
 }
 
 function loadTemplate(
-  editorState: EditorState,
+  existingState: EditorState | undefined,
   template: Template,
   playgroundState: PlaygroundState
 ): EditorState {
@@ -160,16 +161,18 @@ function loadTemplate(
     ),
   });
 
-  // Instead of closing all tabs, update files with matching names, and discard
-  // any that are no longer needed.
-  for (const file of editorState.files) {
-    const newFile = files.find((f) => f.name === file.name);
+  if (existingState) {
+    // Instead of closing all tabs, update files with matching names, and discard
+    // any that are no longer needed.
+    for (const file of existingState.files) {
+      const newFile = files.find((f) => f.name === file.name);
 
-    if (newFile) {
-      file.model?.setValue(newFile.text);
-      newFile.model = file.model;
-    } else {
-      file.model?.dispose();
+      if (newFile) {
+        file.model?.setValue(newFile.text);
+        newFile.model = file.model;
+      } else {
+        file.model?.dispose();
+      }
     }
   }
 
@@ -184,7 +187,7 @@ function getBrowserGlobal(state: PlaygroundState) {
 
 export function Editor() {
   const { playgroundState, setPlaygroundState } = useContext(PlaygroundContext);
-  const [state, setState] = useState<EditorState>({ files: [] });
+  const [state, setState] = useState<EditorState | undefined>();
   const [activeFile, setActiveFile] = useState<
     EditorState["files"][0] | undefined
   >(undefined);
@@ -205,11 +208,9 @@ export function Editor() {
   }, [sandbox, activeFile]);
 
   useEffect(() => {
-    const newState = loadTemplate(
-      state,
-      playgroundState.selectedTemplate,
-      playgroundState
-    );
+    const newState =
+      (!state && playgroundState.initialEditorState) ||
+      loadTemplate(state, playgroundState.selectedTemplate, playgroundState);
     setState(newState);
     setActiveFile(
       (activeFile && newState.files.find((f) => f.name === activeFile.name)) ??
@@ -222,9 +223,10 @@ export function Editor() {
   ]);
 
   useEffect(() => {
-    if (!sandbox) return;
+    if (!sandbox || !state) return;
 
     const changeListener = sandbox.editor.onDidChangeModelContent(() => {
+      updateHash(playgroundState, state);
       setPlaygroundState({ ...playgroundState, hasEditedModel: true });
     });
 

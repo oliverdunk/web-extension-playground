@@ -1,6 +1,7 @@
 import { Template } from "./index";
 
 export const HelloWorld: Template = {
+  id: "helloWorld",
   name: "Hello World",
   manifest: {
     name: "Hello World",

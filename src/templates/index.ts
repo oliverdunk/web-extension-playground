@@ -6,6 +6,7 @@ import { HelloWorld } from "./helloWorld";
 import { NewTabPage } from "./newTabPage";
 
 export interface Template {
+  id: string;
   name: string;
   manifest: {
     name: string;

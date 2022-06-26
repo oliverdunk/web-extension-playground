@@ -35,6 +35,7 @@ export function Sidebar() {
         hasEditedModel: false,
         ...newState,
       });
+      window.location.hash = "";
     }
   }
 

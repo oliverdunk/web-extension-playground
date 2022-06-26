@@ -1,6 +1,7 @@
 import { Template } from "./index";
 
 export const NewTabPage: Template = {
+  id: "newTabPage",
   name: "New Tab Page",
   manifest: {
     name: "New tab Page",
