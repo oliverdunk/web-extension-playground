@@ -13,7 +13,12 @@ import {
   PlaygroundContext,
   PlaygroundState,
 } from "../StateProvider/StateProvider";
-import { BsDownload, BsLink45Deg, BsTrash } from "react-icons/bs/index";
+import {
+  BsClipboard,
+  BsDownload,
+  BsLink45Deg,
+  BsTrash,
+} from "react-icons/bs/index";
 import { Modal } from "../Modal/Modal";
 import { updateHash } from "../../utils/hash";
 
@@ -193,6 +198,7 @@ export function Editor() {
   >(undefined);
   const [sandbox, setSandbox] = useState<Sandbox>();
   const [showingSafariModal, setShowingSafariModal] = useState(false);
+  const [showingShareModal, setShowingShareModal] = useState(false);
   const [addingFile, setAddingFile] = useState(false);
 
   useEffect(() => {
@@ -319,7 +325,10 @@ export function Editor() {
           >
             <BsDownload />
           </button>
-          <button className={styles.share}>
+          <button
+            className={styles.share}
+            onClick={() => setShowingShareModal(true)}
+          >
             <BsLink45Deg />
           </button>
         </div>
@@ -334,6 +343,31 @@ export function Editor() {
         </p>
         <code>xcrun safari-web-extension-converter extension</code>
         <button onClick={() => setShowingSafariModal(false)}>Ok</button>
+      </Modal>
+      <Modal
+        isOpen={showingShareModal}
+        onRequestClose={() => setShowingShareModal(false)}
+      >
+        <h1>Share your project</h1>
+        <p>
+          To share your project, just copy this unique link. It contains all of
+          the data about your current editor state.
+        </p>
+        <div className={styles.shareLink}>
+          <input id="shareLink" type="text" value={window.location.href} />
+          <button
+            onClick={() => {
+              const input = document.getElementById(
+                "shareLink"
+              ) as HTMLInputElement;
+              input.focus();
+              input.select();
+              document.execCommand("copy");
+            }}
+          >
+            <BsClipboard />
+          </button>
+        </div>
       </Modal>
     </div>
   );

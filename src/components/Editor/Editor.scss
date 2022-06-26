@@ -82,3 +82,42 @@
     }
   }
 }
+
+.shareLink {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  
+  input {
+    flex-grow: 1;
+    width: 100%;
+    padding: 5px;
+    border-radius: 5px;
+    border: 2px solid black;
+
+    [data-theme="dark"] & {
+      background: #303030;
+      color: #dedede;
+      border-color: #646464;
+    }
+  }
+
+  button {
+    margin-left: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+  
+    &:active {
+      transform: scale(0.95);
+    }
+
+    svg {
+      font-size: 25px !important;
+
+      [data-theme="dark"] & {
+        color: white;
+      }
+    }
+  }
+}
