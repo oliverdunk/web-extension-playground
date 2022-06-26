@@ -3,6 +3,13 @@ body {
   padding: 0;
   overflow: hidden;
   font-family: Arial;
+
+  --bg-color: white;
+  background: var(--bg-color);
+
+  &[data-theme="dark"] {
+    --bg-color: #1e1e1e;;
+  }
 }
 
 .app {
@@ -14,6 +21,11 @@ body {
     color: black;
     font-size: 14px;
     padding: 5px 10px;
+
+    [data-theme="dark"] & {
+      background: #0e0e0e;
+      color: white;
+    }
 
     ul {
       margin: 0;
@@ -28,7 +40,7 @@ body {
           text-decoration: none;
 
           &:active, &:visited {
-            color: black;
+            color: currentColor;
           }
         }
       }

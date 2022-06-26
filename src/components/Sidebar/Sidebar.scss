@@ -1,6 +1,11 @@
 .sidebar {
   background: #fbfbfb;
 
+  [data-theme="dark"] & {
+    background: #282828;
+    color: snow;
+  }
+
   header {
     display: flex;
     align-items: center;
@@ -20,6 +25,10 @@
       cursor: pointer;
       padding-top: 5px;
 
+      [data-theme="dark"] & {
+        color: white;
+      }
+
       // No need to show on desktop
       display: none;
     }
@@ -35,6 +44,10 @@
     text-transform: uppercase;
     text-align: center;
     font-size: 15px;
+
+    [data-theme="dark"] & {
+      background: #2d2d2d;
+    }
 
     &:not(:first-of-type) {
       margin-top: 20px;
@@ -55,10 +68,18 @@
       font-size: 14px;
       text-align: center;
       user-select: none;
-
+      
       &:hover {
         background: #ebebeb;
         cursor: pointer;
+      }
+
+      [data-theme="dark"] & {
+        background: #262626;
+
+        &:hover {
+          background: #171717;
+        }
       }
 
       &[data-selected] {
@@ -75,6 +96,10 @@
 
         &.filled {
           color: #0051f8;
+
+          [data-theme="dark"] & {
+            color: white;
+          }
         }
       }
     }

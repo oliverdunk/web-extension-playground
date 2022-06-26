@@ -12,6 +12,8 @@ import {
   BsCaretUpFill,
   BsCheckCircle,
   BsCheckCircleFill,
+  BsMoon,
+  BsMoonFill,
 } from "react-icons/bs";
 
 export function Sidebar() {
@@ -100,6 +102,21 @@ export function Sidebar() {
             <BsCheckCircleFill className={styles.filled} />
           ) : (
             <BsCheckCircle />
+          )}
+        </li>
+        <li
+          onClick={() =>
+            setPlaygroundState({
+              ...playgroundState,
+              theme: playgroundState.theme === "Light" ? "Dark" : "Light",
+            })
+          }
+        >
+          Dark theme{" "}
+          {playgroundState.theme === "Dark" ? (
+            <BsMoonFill className={styles.filled} />
+          ) : (
+            <BsMoon />
           )}
         </li>
       </ul>

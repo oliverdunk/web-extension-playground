@@ -231,6 +231,13 @@ export function Editor() {
     return () => changeListener.dispose();
   }, [sandbox, playgroundState]);
 
+  useEffect(() => {
+    if (!sandbox) return;
+    monaco.editor.setTheme(
+      playgroundState.theme === "Dark" ? "sandbox-dark" : "sandbox"
+    );
+  }, [sandbox, playgroundState.theme]);
+
   if (!state) return null;
 
   return (

@@ -1,3 +1,12 @@
+.overlay {
+  background: rgb(3 3 3 / 75%);
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+}
+
 .modal {
   max-width: min(400px, min(400px, calc(100% - 150px)));
   background: white;
@@ -9,6 +18,11 @@
   transform: translate(-50%, -50%);
   box-shadow: -1px 1px 11px 0px #31313129;
   padding: 40px;
+
+  [data-theme="dark"] & {
+    background: #272727;
+    color: white;
+  }
 
   h1 {
     margin: 0;
