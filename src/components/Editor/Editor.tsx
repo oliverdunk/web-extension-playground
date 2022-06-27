@@ -280,7 +280,9 @@ export function Editor() {
           following on the resulting folder:
         </p>
         <code>xcrun safari-web-extension-converter extension</code>
-        <button onClick={() => setShowingSafariModal(false)}>Ok</button>
+        <button type="submit" onClick={() => setShowingSafariModal(false)}>
+          Ok
+        </button>
       </Modal>
       <Modal
         isOpen={showingShareModal}
