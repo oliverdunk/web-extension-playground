@@ -181,6 +181,8 @@ export function Editor() {
 
   if (!state) return null;
 
+  const shareLink = window.location.href;
+
   return (
     <div className={styles.editor}>
       <nav>
@@ -290,15 +292,16 @@ export function Editor() {
           the data about your current editor state.
         </p>
         <div className={styles.shareLink}>
-          <input id="shareLink" type="text" value={window.location.href} />
+          <input
+            id="shareLink"
+            type="text"
+            value={shareLink}
+            readOnly
+            disabled
+          />
           <button
             onClick={() => {
-              const input = document.getElementById(
-                "shareLink"
-              ) as HTMLInputElement;
-              input.focus();
-              input.select();
-              document.execCommand("copy");
+              navigator.clipboard.writeText(shareLink);
             }}
           >
             <BsClipboard />
