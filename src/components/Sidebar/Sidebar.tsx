@@ -24,6 +24,10 @@ export function Sidebar() {
 
   const [showingMobileMenu, setShowingMobileMenu] = useState(false);
   const [showingAboutModal, setShowingAboutModal] = useState(false);
+  const [showingMobileModal, setShowingMobileModal] = useState(
+    "ontouchstart" in document.documentElement &&
+      !localStorage.getItem("mobile-warning-shown")
+  );
 
   function setStateWithConfirmation(newState: Partial<PlaygroundState>) {
     if (
@@ -147,6 +151,30 @@ export function Sidebar() {
         </p>
         <p>Extension types are vendored from <a href="https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/chrome" target="_blank">@types/chrome</a> and <a href="https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/webextension-polyfill" target="_blank">@types/webextension-polyfill</a>.</p>
         <p>webextension-polyfill is available <a href="https://github.com/mozilla/webextension-polyfill" target="_blank">on GitHub</a>.</p>
+      </Modal>
+      <Modal
+        isOpen={showingMobileModal}
+        onRequestClose={() => {
+          setShowingMobileModal(false);
+          localStorage.setItem("mobile-warning-shown", "true");
+        }}
+      >
+        <h1>Better on desktop</h1>
+        <p>
+          Mobile support was an important consideration when building this site,
+          and it should work fairly well. That said, code editing really is
+          better served on desktop. Do try loading this site there if you get a
+          chance!
+        </p>
+        <button
+          type="submit"
+          onClick={() => {
+            setShowingMobileModal(false);
+            localStorage.setItem("mobile-warning-shown", "true");
+          }}
+        >
+          Ok
+        </button>
       </Modal>
     </div>
   );
