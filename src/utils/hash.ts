@@ -4,6 +4,7 @@ import {
   ManifestVersion,
   PlaygroundState,
 } from "../components/StateProvider/StateProvider";
+import lzstring from "../vendor/lzstring.min";
 
 export interface HashState {
   browser: Browser;
@@ -31,7 +32,10 @@ export function updateHash(
       text: f.model ? f.model.getValue() : f.text,
     })),
   };
-  params.set("state", btoa(JSON.stringify(state)));
+  params.set(
+    "s",
+    lzstring.compressToEncodedURIComponent(JSON.stringify(state))
+  );
   window.location.hash = params.toString();
 }
 
@@ -40,6 +44,14 @@ export function parseHash(): HashState | undefined {
 
   try {
     const params = new URLSearchParams(window.location.hash.substring(1));
+    const newState = params.get("s");
+
+    // New format with unicode support
+    if (newState) {
+      return JSON.parse(lzstring.decompressFromEncodedURIComponent(newState));
+    }
+
+    // Original format (was only around for a day, could potentially remove)
     const state = params.get("state");
     return state ? JSON.parse(atob(state)) : undefined;
   } catch {
