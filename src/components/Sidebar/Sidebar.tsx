@@ -33,7 +33,7 @@ export function Sidebar() {
     if (
       !playgroundState.hasEditedModel ||
       window.confirm(
-        "Changing the template, selected browser or API version will overwrite any changes. Continue?"
+        "Changing the editor settings will regenerate the project and overwrite any file changes. Continue?"
       )
     ) {
       setPlaygroundState({
@@ -99,8 +99,7 @@ export function Sidebar() {
         <ul>
           <li
             onClick={() =>
-              setPlaygroundState({
-                ...playgroundState,
+              setStateWithConfirmation({
                 includePolyfill: !playgroundState.includePolyfill,
               })
             }

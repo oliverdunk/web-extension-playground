@@ -159,6 +159,7 @@ export function Editor() {
     playgroundState.selectedTemplate,
     playgroundState.selectedBrowser,
     playgroundState.manifestVersion,
+    playgroundState.includePolyfill,
   ]);
 
   useEffect(() => {
