@@ -39,7 +39,7 @@ async function getOutput(
   const output = await worker.getEmitOutput(file.model.uri.toString());
   let text = output.outputFiles[0].text;
 
-  if (file.name === "background.ts" && includePolyfill) {
+  if (includePolyfill) {
     const polyfillResponse = await fetch(
       "https://unpkg.com/webextension-polyfill@0.9.0/dist/browser-polyfill.min.js"
     );
