@@ -32,9 +32,7 @@ function getInitialState(): PlaygroundState {
     selectedBrowser: hashState?.browser ?? "Chrome",
     manifestVersion: hashState?.manifestVersion ?? "MV2",
     includePolyfill: hashState?.includePolyfill ?? false,
-    theme: window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? "Dark"
-      : "Light",
+    theme: "Dark",
     initialEditorState: hashState && {
       files: hashState.files.map((f) => ({
         name: f.name,
