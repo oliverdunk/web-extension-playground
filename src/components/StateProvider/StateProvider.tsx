@@ -30,7 +30,7 @@ function getInitialState(): PlaygroundState {
       (hashState && templates.find((t) => t.id === hashState.templateId)) ??
       templates[0],
     selectedBrowser: hashState?.browser ?? "Chrome",
-    manifestVersion: hashState?.manifestVersion ?? "MV2",
+    manifestVersion: hashState?.manifestVersion ?? "MV3",
     includePolyfill: hashState?.includePolyfill ?? false,
     theme: "Dark",
     initialEditorState: hashState && {

@@ -46,7 +46,7 @@ export function Sidebar() {
   }
 
   const browsers: Browser[] = ["Chrome", "Firefox", "Safari"];
-  const manifestVersions: ManifestVersion[] = ["MV2", "MV3"];
+  const manifestVersions: ManifestVersion[] = ["MV3", "MV2"];
 
   return (
     <div
