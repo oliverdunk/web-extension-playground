@@ -64,6 +64,7 @@ export function Sidebar() {
         <ul>
           {templates.map((t) => (
             <li
+              data-disabled={t.filter?.(playgroundState) === false}
               data-selected={selectedTemplate === t ? "true" : undefined}
               onClick={() => {
                 setStateWithConfirmation({ selectedTemplate: t });
@@ -77,6 +78,7 @@ export function Sidebar() {
         <ul>
           {browsers.map((b: Browser) => (
             <li
+              data-disabled={selectedTemplate.filter?.({ ...playgroundState, selectedBrowser: b }) === false}
               data-selected={selectedBrowser === b ? "true" : undefined}
               onClick={() => setStateWithConfirmation({ selectedBrowser: b })}
             >

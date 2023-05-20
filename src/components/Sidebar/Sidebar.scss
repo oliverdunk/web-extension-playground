@@ -91,6 +91,11 @@
         }
       }
 
+      &[data-disabled="true"] {
+        opacity: 0.6;
+        pointer-events: none;
+      }
+
       svg {
         margin-left: 5px;
 

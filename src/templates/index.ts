@@ -1,9 +1,11 @@
 import {
   Browser,
   ManifestVersion,
+  PlaygroundState,
 } from "../components/StateProvider/StateProvider";
 import { HelloWorld } from "./helloWorld";
 import { NewTabPage } from "./newTabPage";
+import { SidePanel } from "./sidePanel";
 
 export interface Template {
   id: string;
@@ -12,12 +14,17 @@ export interface Template {
     name: string;
     description: string;
     backgroundScripts: string[];
+    permissions?: {
+      sidePanel?: true;
+    };
+    sidepanelPath?: string;
     newTabPage?: string;
   };
   files: {
     name: string;
     text: (browserGlobal: string) => string;
   }[];
+  filter?: (state: PlaygroundState) => boolean;
 }
 
 export function generateManifest(
@@ -56,13 +63,42 @@ export function generateManifest(
     }
   }
 
+  if (manifest.sidepanelPath) {
+    switch (browser) {
+      case "Chrome":
+        result["side_panel"] = {
+          default_path: manifest.sidepanelPath,
+        };
+        break;
+      case "Firefox":
+        result["sidebar_action"] = {
+          default_panel: manifest.sidepanelPath,
+        };
+        break;
+      default:
+        throw new Error("Unexpected browser for sidepanelPath");
+    }
+  }
+
   if (manifest.newTabPage) {
     result["chrome_url_overrides"] = {
       newtab: manifest.newTabPage,
     };
   }
 
+  if (manifest.permissions) {
+    const permissions = [];
+
+    if (manifest.permissions.sidePanel && browser === "Chrome") {
+      permissions.push("sidePanel");
+    }
+
+    if (permissions.length > 0) {
+      result["permissions"] = permissions;
+    }
+  }
+
   return JSON.stringify(result, undefined, 2);
 }
 
-export const templates = [HelloWorld, NewTabPage];
+export const templates = [HelloWorld, NewTabPage, SidePanel];
