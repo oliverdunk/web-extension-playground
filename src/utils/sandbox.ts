@@ -19,7 +19,7 @@ export async function loadSandbox(): Promise<Sandbox> {
   const browserTypes = await browserTypesResponse.text();
 
   const chromeTypesResponse = await fetch(
-    "https://unpkg.com/@types/chrome@0.0.190/index.d.ts"
+    "https://unpkg.com/@types/chrome@latest/index.d.ts"
   );
   const chromeTypes = await chromeTypesResponse.text();
 
