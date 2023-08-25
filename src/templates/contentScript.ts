@@ -23,7 +23,11 @@ ${global}.runtime.onInstalled.addListener((details) => {
   console.log("Extension has been installed. Reason:", details.reason);
 });
 
-function handleMessage(request: any, _sender: chrome.runtime.MessageSender, sendResponse: (response?: any) => void) {
+function handleMessage(
+  request: { greeting: string },
+  _sender: chrome.runtime.MessageSender,
+  sendResponse: (response?: { response: string }) => void
+) {
   console.log("A content script sent a message:", request.greeting);
   sendResponse({ response: "Response from background script" });
 }
@@ -36,7 +40,7 @@ console.log("Hello World!");
       name: "content_script.ts",
       text: (global) =>
         `
-function handleResponse(message: any) {
+function handleResponse(message: { response: string }) {
   console.log("Response from the background script:", message.response);
 }
 
