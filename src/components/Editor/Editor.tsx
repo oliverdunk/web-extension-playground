@@ -22,6 +22,9 @@ export interface EditorState {
   files: {
     name: string;
     text: string;
+    /**
+     * @deprecated Prefer {@link getOrCreateModel()}.
+     */
     model?: import("monaco-editor").editor.IModel;
   }[];
 }
@@ -30,13 +33,13 @@ async function getOutput(
   file: EditorState["files"][0],
   includePolyfill: boolean
 ) {
-  if (!file.model) return file.text;
-  if (!file.name.endsWith(".ts")) return file.model.getValue();
+  const model = getOrCreateModel(file);
+  if (!file.name.endsWith(".ts")) return model.getValue();
 
   const worker = await (
     await monaco.languages.typescript.getTypeScriptWorker()
-  )(file.model.uri);
-  const output = await worker.getEmitOutput(file.model.uri.toString());
+  )(model.uri);
+  const output = await worker.getEmitOutput(model.uri.toString());
   let text = output.outputFiles[0].text;
 
   if (includePolyfill) {
@@ -65,18 +68,22 @@ async function downloadProject(state: EditorState, includePolyfill: boolean) {
   downloadBlob(blob, "extension.zip");
 }
 
-function setFile(sandbox: Sandbox, file: EditorState["files"][0]) {
-  let model = file.model;
-
-  if (!model) {
-    model = file.model = monaco.editor.createModel(
+function getOrCreateModel(
+  file: EditorState["files"][0]
+): import("monaco-editor").editor.IModel {
+  if (!file.model) {
+    file.model = monaco.editor.createModel(
       file.text,
       undefined,
       new monaco.Uri().with({ path: file.name })
     );
   }
 
-  sandbox.editor.setModel(model);
+  return file.model;
+}
+
+function setFile(sandbox: Sandbox, file: EditorState["files"][0]) {
+  sandbox.editor.setModel(getOrCreateModel(file));
 }
 
 function loadTemplate(
