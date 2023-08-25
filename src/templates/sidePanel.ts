@@ -15,9 +15,9 @@ export const SidePanel: Template = {
   files: [
     {
       name: "background.ts",
-      text: (global) =>
+      text: (context) =>
         `
-${global}.runtime.onInstalled.addListener((details) => {
+${context.global}.runtime.onInstalled.addListener((details) => {
   console.log("Extension has been installed. Reason:", details.reason);
 });
 

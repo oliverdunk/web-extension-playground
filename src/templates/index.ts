@@ -8,6 +8,12 @@ import { HelloWorld } from "./helloWorld";
 import { NewTabPage } from "./newTabPage";
 import { SidePanel } from "./sidePanel";
 
+export interface TemplateFileContext {
+  global: string;
+  browser: Browser;
+  manifestVersion: ManifestVersion;
+}
+
 export interface Template {
   id: string;
   name: string;
@@ -27,7 +33,7 @@ export interface Template {
   };
   files: {
     name: string;
-    text: (browserGlobal: string) => string;
+    text: (context: TemplateFileContext) => string;
   }[];
   filter?: (state: PlaygroundState) => boolean;
 }

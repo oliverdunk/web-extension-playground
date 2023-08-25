@@ -17,9 +17,9 @@ export const ContentScript: Template = {
   files: [
     {
       name: "background.ts",
-      text: (global) =>
+      text: (context) =>
         `
-${global}.runtime.onInstalled.addListener((details) => {
+${context.global}.runtime.onInstalled.addListener((details) => {
   console.log("Extension has been installed. Reason:", details.reason);
 });
 
@@ -38,21 +38,42 @@ console.log("Hello World!");
     },
     {
       name: "content_script.ts",
-      text: (global) =>
-        `
-function handleResponse(message: { response: string }) {
-  console.log("Response from the background script:", message.response);
-}
-
+      text: (context) => {
+        let notifyBackgroundPageImpl;
+        if (context.browser === "Chrome" && context.manifestVersion === "MV2") {
+          // Chrome doesn't support the promise-based interface in MV2, so we use
+          // the callback interface instead
+          notifyBackgroundPageImpl = `
 function notifyBackgroundPage() {
-  const sending = ${global}.runtime.sendMessage({
+  ${context.global}.runtime.sendMessage(
+    {
+      greeting: "Greeting from the content script",
+    },
+    handleResponse
+  );
+}          
+          `.trim();
+        } else {
+          notifyBackgroundPageImpl = `
+function notifyBackgroundPage() {
+  const sending = ${context.global}.runtime.sendMessage({
     greeting: "Greeting from the content script",
   });
   sending.then(handleResponse);
 }
+          `.trim();
+        }
+
+        return `
+function handleResponse(message: { response: string }) {
+  console.log("Response from the background script:", message.response);
+}
+
+${notifyBackgroundPageImpl}
 
 notifyBackgroundPage();
-      `.trim(),
+        `.trim();
+      },
     },
   ],
 };

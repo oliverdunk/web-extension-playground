@@ -12,7 +12,7 @@ export const NewTabPage: Template = {
   files: [
     {
       name: "background.ts",
-      text: (global) =>
+      text: (context) =>
         `
 console.log("Hello World!");
       `.trim(),
