@@ -37,21 +37,17 @@ console.log("Hello World!");
       text: (global) =>
         `
 function handleResponse(message: any) {
-  console.log("Message from the background script:", message.response);
-}
-
-function handleError(error: any) {
-  console.log("Error:", error);
+  console.log("Response from the background script:", message.response);
 }
 
 function notifyBackgroundPage() {
   const sending = ${global}.runtime.sendMessage({
     greeting: "Greeting from the content script",
   });
-  sending.then(handleResponse, handleError);
+  sending.then(handleResponse);
 }
 
-window.addEventListener("click", notifyBackgroundPage);
+notifyBackgroundPage();
       `.trim(),
     },
   ],
