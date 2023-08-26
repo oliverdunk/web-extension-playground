@@ -3,9 +3,16 @@ import {
   ManifestVersion,
   PlaygroundState,
 } from "../components/StateProvider/StateProvider";
+import { ContentScript } from "./contentScript";
 import { HelloWorld } from "./helloWorld";
 import { NewTabPage } from "./newTabPage";
 import { SidePanel } from "./sidePanel";
+
+export interface TemplateFileContext {
+  global: string;
+  browser: Browser;
+  manifestVersion: ManifestVersion;
+}
 
 export interface Template {
   id: string;
@@ -14,6 +21,10 @@ export interface Template {
     name: string;
     description: string;
     backgroundScripts: string[];
+    contentScripts?: {
+      matches: string[];
+      js: string[];
+    }[];
     permissions?: {
       sidePanel?: true;
     };
@@ -22,7 +33,7 @@ export interface Template {
   };
   files: {
     name: string;
-    text: (browserGlobal: string) => string;
+    text: (context: TemplateFileContext) => string;
   }[];
   filter?: (state: PlaygroundState) => boolean;
 }
@@ -63,6 +74,10 @@ export function generateManifest(
     }
   }
 
+  if (manifest.contentScripts && manifest.contentScripts.length > 0) {
+    result["content_scripts"] = manifest.contentScripts;
+  }
+
   if (manifest.sidepanelPath) {
     switch (browser) {
       case "Chrome":
@@ -101,4 +116,4 @@ export function generateManifest(
   return JSON.stringify(result, undefined, 2);
 }
 
-export const templates = [HelloWorld, NewTabPage, SidePanel];
+export const templates = [HelloWorld, ContentScript, NewTabPage, SidePanel];

@@ -94,7 +94,11 @@ function loadTemplate(
   // Load in new files
   const files = template.files.map((f): EditorState["files"][0] => ({
     name: f.name,
-    text: f.text(getBrowserGlobal(playgroundState)),
+    text: f.text({
+      global: getBrowserGlobal(playgroundState),
+      browser: playgroundState.selectedBrowser,
+      manifestVersion: playgroundState.manifestVersion,
+    }),
   }));
 
   files.unshift({
