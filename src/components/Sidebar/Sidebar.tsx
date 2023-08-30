@@ -78,7 +78,12 @@ export function Sidebar() {
         <ul>
           {browsers.map((b: Browser) => (
             <li
-              data-disabled={selectedTemplate.filter?.({ ...playgroundState, selectedBrowser: b }) === false}
+              data-disabled={
+                selectedTemplate.filter?.({
+                  ...playgroundState,
+                  selectedBrowser: b,
+                }) === false
+              }
               data-selected={selectedBrowser === b ? "true" : undefined}
               onClick={() => setStateWithConfirmation({ selectedBrowser: b })}
             >
@@ -90,6 +95,12 @@ export function Sidebar() {
         <ul>
           {manifestVersions.map((v: "MV2" | "MV3") => (
             <li
+              data-disabled={
+                selectedTemplate.filter?.({
+                  ...playgroundState,
+                  manifestVersion: v,
+                }) === false
+              }
               data-selected={manifestVersion === v ? "true" : undefined}
               onClick={() => setStateWithConfirmation({ manifestVersion: v })}
             >

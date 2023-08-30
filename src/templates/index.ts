@@ -7,6 +7,7 @@ import { ContentScript } from "./contentScript";
 import { HelloWorld } from "./helloWorld";
 import { NewTabPage } from "./newTabPage";
 import { SidePanel } from "./sidePanel";
+import { DNR } from "./dnr";
 
 export interface TemplateFileContext {
   global: string;
@@ -27,7 +28,12 @@ export interface Template {
     }[];
     permissions?: {
       sidePanel?: true;
+      declarativeNetRequest?: true;
     };
+    dnrRules?: {
+      id: string;
+      path: string;
+    }[];
     sidepanelPath?: string;
     newTabPage?: string;
   };
@@ -108,12 +114,32 @@ export function generateManifest(
       permissions.push("sidePanel");
     }
 
+    if (manifest.permissions.declarativeNetRequest) {
+      permissions.push("declarativeNetRequest");
+    }
+
     if (permissions.length > 0) {
       result["permissions"] = permissions;
     }
   }
 
+  if (manifest.dnrRules && manifest.dnrRules.length > 0) {
+    result["declarative_net_request"] = {
+      rule_resources: manifest.dnrRules.map((rule) => ({
+        id: rule.id,
+        enabled: true,
+        path: rule.path,
+      })),
+    };
+  }
+
   return JSON.stringify(result, undefined, 2);
 }
 
-export const templates = [HelloWorld, ContentScript, NewTabPage, SidePanel];
+export const templates = [
+  HelloWorld,
+  ContentScript,
+  NewTabPage,
+  SidePanel,
+  DNR,
+];
