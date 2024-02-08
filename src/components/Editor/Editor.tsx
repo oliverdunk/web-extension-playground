@@ -10,12 +10,13 @@ import {
 } from "../StateProvider/StateProvider";
 import {
   BsClipboard,
+  BsCode,
   BsDownload,
   BsLink45Deg,
   BsTrash,
 } from "react-icons/bs/index";
 import { Modal } from "../Modal/Modal";
-import { updateHash } from "../../utils/hash";
+import { getHash, updateHash } from "../../utils/hash";
 import { loadSandbox } from "../../utils/sandbox";
 
 export interface EditorState {
@@ -143,6 +144,8 @@ export function Editor() {
   const [sandbox, setSandbox] = useState<Sandbox>();
   const [showingSafariModal, setShowingSafariModal] = useState(false);
   const [showingShareModal, setShowingShareModal] = useState(false);
+  const [codeIntegrationEnabled, setCodeIntegrationEnabled] = useState(false);
+  const [showingCodeModal, setShowingCodeModal] = useState(false);
   const [addingFile, setAddingFile] = useState(false);
 
   useEffect(() => {
@@ -190,6 +193,10 @@ export function Editor() {
       playgroundState.theme === "Dark" ? "sandbox-dark" : "sandbox"
     );
   }, [sandbox, playgroundState.theme]);
+
+  useEffect(() => {
+    (window as any).enableCodeIntegration = () => setCodeIntegrationEnabled(true);
+  }, [setCodeIntegrationEnabled]);
 
   if (!state) return null;
 
@@ -258,6 +265,7 @@ export function Editor() {
         </ul>
         <div className={styles.actions}>
           <button
+            title="Download"
             onClick={() => {
               downloadProject(
                 state,
@@ -274,6 +282,7 @@ export function Editor() {
           </button>
           <button
             className={styles.share}
+            title="Copy Link"
             onClick={() => {
               updateHash(playgroundState, state);
               setShowingShareModal(true);
@@ -281,6 +290,18 @@ export function Editor() {
           >
             <BsLink45Deg />
           </button>
+          {codeIntegrationEnabled && (
+            <button
+              className={styles.share}
+              title="Open in VS Code"
+              onClick={() => {
+                window.location.href = `vscode://patrickkettner.web-extensions-sync/load-project#s=${getHash(playgroundState, state)}`;
+                setShowingCodeModal(true);
+              }}
+            >
+              <BsCode />
+            </button>
+          )}
         </div>
       </nav>
       <div id="editor"></div>
@@ -321,6 +342,15 @@ export function Editor() {
             <BsClipboard />
           </button>
         </div>
+      </Modal>
+      <Modal isOpen={showingCodeModal}>
+        <h1>Opening in VS Code...</h1>
+        <p>
+          If you have the <a href="https://marketplace.visualstudio.com/items?itemName=patrickkettner.web-extensions-sync" target="_blank">web-extensions-sync</a> extension installed in VS Code, a new editor window with this project should have opened.
+        </p>
+        <button type="submit" onClick={() => setShowingCodeModal(false)}>
+          Got It
+        </button>
       </Modal>
     </div>
   );
