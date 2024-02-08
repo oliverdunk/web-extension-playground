@@ -17,11 +17,10 @@ export interface HashState {
   }[];
 }
 
-export function updateHash(
+export function getHash(
   playgroundState: PlaygroundState,
   editorState: EditorState
 ) {
-  const params = new URLSearchParams();
   const state: HashState = {
     browser: playgroundState.selectedBrowser,
     manifestVersion: playgroundState.manifestVersion,
@@ -32,10 +31,15 @@ export function updateHash(
       text: f.model ? f.model.getValue() : f.text,
     })),
   };
-  params.set(
-    "s",
-    lzstring.compressToEncodedURIComponent(JSON.stringify(state))
-  );
+  return lzstring.compressToEncodedURIComponent(JSON.stringify(state));
+}
+
+export function updateHash(
+  playgroundState: PlaygroundState,
+  editorState: EditorState
+) {
+  const params = new URLSearchParams();
+  params.set("s", getHash(playgroundState, editorState));
   window.location.hash = params.toString();
 }
 
