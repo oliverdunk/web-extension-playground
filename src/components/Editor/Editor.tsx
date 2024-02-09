@@ -144,7 +144,7 @@ export function Editor() {
   const [sandbox, setSandbox] = useState<Sandbox>();
   const [showingSafariModal, setShowingSafariModal] = useState(false);
   const [showingShareModal, setShowingShareModal] = useState(false);
-  const [codeIntegrationEnabled, setCodeIntegrationEnabled] = useState(false);
+  const [codeIntegrationEnabled, setCodeIntegrationEnabled] = useState(true);
   const [showingCodeModal, setShowingCodeModal] = useState(false);
   const [addingFile, setAddingFile] = useState(false);
 
