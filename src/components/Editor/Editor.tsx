@@ -144,7 +144,6 @@ export function Editor() {
   const [sandbox, setSandbox] = useState<Sandbox>();
   const [showingSafariModal, setShowingSafariModal] = useState(false);
   const [showingShareModal, setShowingShareModal] = useState(false);
-  const [codeIntegrationEnabled, setCodeIntegrationEnabled] = useState(true);
   const [showingCodeModal, setShowingCodeModal] = useState(false);
   const [addingFile, setAddingFile] = useState(false);
 
@@ -193,10 +192,6 @@ export function Editor() {
       playgroundState.theme === "Dark" ? "sandbox-dark" : "sandbox"
     );
   }, [sandbox, playgroundState.theme]);
-
-  useEffect(() => {
-    (window as any).enableCodeIntegration = () => setCodeIntegrationEnabled(true);
-  }, [setCodeIntegrationEnabled]);
 
   if (!state) return null;
 
@@ -290,18 +285,19 @@ export function Editor() {
           >
             <BsLink45Deg />
           </button>
-          {codeIntegrationEnabled && (
-            <button
-              className={styles.share}
-              title="Open in VS Code"
-              onClick={() => {
-                window.location.href = `vscode://patrickkettner.web-extensions-sync/load-project#s=${getHash(playgroundState, state)}`;
-                setShowingCodeModal(true);
-              }}
-            >
-              <BsCode />
-            </button>
-          )}
+          <button
+            className={styles.share}
+            title="Open in VS Code"
+            onClick={() => {
+              window.location.href = `vscode://patrickkettner.web-extensions-sync/load-project#s=${getHash(
+                playgroundState,
+                state
+              )}`;
+              setShowingCodeModal(true);
+            }}
+          >
+            <BsCode />
+          </button>
         </div>
       </nav>
       <div id="editor"></div>
@@ -343,12 +339,24 @@ export function Editor() {
           </button>
         </div>
       </Modal>
-      <Modal isOpen={showingCodeModal}>
+      <Modal
+        isOpen={showingCodeModal}
+        onRequestClose={() => setShowingCodeModal(false)}
+      >
         <h1>Opening in VS Code...</h1>
         <p>
-          If you have the <a href="https://marketplace.visualstudio.com/items?itemName=patrickkettner.web-extensions-sync" target="_blank">web-extensions-sync</a> extension installed in VS Code, a new editor window with this project should have opened.
+          If you have VS Code installed, it should open now. If you don't have
+          it installed, download it{" "}
+          <a href="https://code.visualstudio.com/" target="_blank">
+            here
+          </a>
+          .
         </p>
-        <button type="submit" onClick={() => setShowingCodeModal(false)}>
+        <button
+          type="submit"
+          onClick={() => setShowingCodeModal(false)}
+          autoFocus
+        >
           Got It
         </button>
       </Modal>
