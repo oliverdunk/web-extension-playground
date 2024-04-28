@@ -64,6 +64,7 @@ export function Sidebar() {
         <ul>
           {templates.map((t) => (
             <li
+              key={t.name}
               data-disabled={t.filter?.(playgroundState) === false}
               data-selected={selectedTemplate === t ? "true" : undefined}
               onClick={() => {
@@ -78,6 +79,7 @@ export function Sidebar() {
         <ul>
           {browsers.map((b: Browser) => (
             <li
+              key={b}
               data-disabled={
                 selectedTemplate.filter?.({
                   ...playgroundState,
@@ -95,6 +97,7 @@ export function Sidebar() {
         <ul>
           {manifestVersions.map((v: "MV2" | "MV3") => (
             <li
+              key={v}
               data-disabled={
                 selectedTemplate.filter?.({
                   ...playgroundState,
@@ -111,6 +114,7 @@ export function Sidebar() {
         <h2>Settings</h2>
         <ul>
           <li
+            key="polyfill"
             onClick={() =>
               setStateWithConfirmation({
                 includePolyfill: !playgroundState.includePolyfill,
@@ -125,6 +129,7 @@ export function Sidebar() {
             )}
           </li>
           <li
+            key="theme"
             onClick={() =>
               setPlaygroundState({
                 ...playgroundState,
