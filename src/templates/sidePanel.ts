@@ -18,7 +18,7 @@ export const SidePanel: Template = {
       text: (context) =>
         `
 ${context.global}.runtime.onInstalled.addListener((details) => {
-  console.log("Extension has been installed. Reason:", details.reason);
+  console.log("Extension has been installed. Reason:", details.reason);${context.browser === "Chrome" ? "\n  chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true });" : ""}
 });
 
 console.log("Hello World!");
