@@ -87,6 +87,9 @@ export function generateManifest(
   if (manifest.sidepanelPath) {
     switch (browser) {
       case "Chrome":
+        result["action"] = {
+          default_title: "Open side panel",
+        };
         result["side_panel"] = {
           default_path: manifest.sidepanelPath,
         };
