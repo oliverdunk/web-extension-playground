@@ -45,7 +45,7 @@ async function getOutput(
 
   if (includePolyfill) {
     const polyfillResponse = await fetch(
-      "https://unpkg.com/webextension-polyfill@0.9.0/dist/browser-polyfill.min.js"
+      "https://unpkg.com/webextension-polyfill@0.12.0/dist/browser-polyfill.min.js"
     );
     const polyfill = await polyfillResponse.text();
 
